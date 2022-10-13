@@ -49,8 +49,44 @@ def elimination( mat ):
     return roots
 
 
+def elimination_pivoting( mat ):
+    
+    mat = Matrix( mat.mat )
+    rows = mat.row_count()
+    for row in range(0,rows-1):
+        mxi = row
+        for i in range( row, rows ):
+            if mat[i][row] > mat[mxi][row]:
+                mxi = i
 
-print( elimination(mat) )
+        gg = Row( mat[mxi].row )
+        mat[mxi] = Row( mat[row].row )
+        mat[row] = gg
+
+        for i in range(row, rows-1):
+            mat[i+1] = mat[i+1] - ( mat[row] * ( mat[i+1][row] / mat[row][row] ) )
+
+        print(mat)
+
+    
+    rows = mat.row_count()
+    
+    roots = [ 0 for i in range(rows) ]
+
+    roots[rows-1] = mat[rows-1][rows] / mat[rows-1][rows-1]
+
+    for i in range(rows-2, -1, -1):
+        right_side = mat[i][rows]
+        for ix in range(len(roots)):
+            right_side -= mat[i][ix] * roots[ix] 
+        roots[i] = right_side / mat[i][i]
+
+
+    return roots
+
+
+
+print( elimination_pivoting(mat) )
         
 
 
