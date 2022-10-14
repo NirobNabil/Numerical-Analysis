@@ -1,8 +1,12 @@
 
 import time
 import pandas
+import sympy  
 
 threshold = 0.5*(10**-2)
+x = sympy.Symbol('x')
+equation = ""
+eq = ""
 
 
 def eq(x):
@@ -20,7 +24,7 @@ def getxm( xl, xu ):
     return ( xu*eq(xl) - xl*eq(xu) ) / ( eq(xl) - eq(xu) )
 
 
-def raphson( xip ):
+def recurse( xip ):
 
     xi = xip - ( eq(xip) / eqp(xip) )
 
@@ -29,27 +33,31 @@ def raphson( xip ):
     return ( error, xi )
 
 
+def raphson( eqn, xi ):
 
-xi = 0.05
-it = 1
+    global eq
+    eq = sympy.lambdify( x, eval(eqn) )
 
-table = []
+    # xi = 0.05
+    it = 1
 
-table.append( [ it, xi, 'N/A', eq(xi) ] )
+    table = []
 
-error = 10000000
+    table.append( [ it, xi, 'N/A', eq(xi) ] )
 
-while( error > threshold ):
-    ( error, xi ) = raphson( xi )
+    error = 10000000
 
-    it = it+1
-    table.append( [ it, xi, error*100, eq(xi) ] )
-    print( [ it, xi, error*100, eq(xi) ] )
+    while( error > threshold ):
+        ( error, xi ) = recurse( xi )
 
-    # time.sleep(0.1)
+        it = it+1
+        table.append( [ it, xi, error*100, eq(xi) ] )
+        # print( [ it, xi, error*100, eq(xi) ] )
+
+        # time.sleep(0.1)
 
 
-data = pandas.DataFrame(table, columns=['iteration', 'xi', 'e0%', 'f(xm)'], index=['']*len(table))
-data = data.round(4)
+    data = pandas.DataFrame(table, columns=['iteration', 'xi', 'e0%', 'f(xm)'], index=['']*len(table))
+    data = data.round(4)
 
-print( data )
+    return data

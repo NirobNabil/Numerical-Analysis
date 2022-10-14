@@ -1,4 +1,4 @@
-from util import *
+from .util import *
 
 # mat = Matrix([
 #     [5., 3.],
@@ -71,8 +71,16 @@ def find_roots_from_upper_triangular( mat, mat_val ):
     return roots
 
 
-def lu( mat, mat_val ):
+def lu( mat ):
     
+    rows = mat.row_count()
+
+    mat_val =  [ [ mat[i][rows] ] for i in range(rows) ]
+    mat_val = Matrix(mat_val)
+
+    mat = [ [ mat[row][col] for col in range(rows) ] for row in range(rows) ]
+    mat = Matrix(mat)
+
     (matU, matL) = get_matrices(mat)
     
     z_arr = find_roots_from_lower_triangular( matL, mat_val )
@@ -102,12 +110,8 @@ def get_inverse( mat ):
     res = Matrix(res)
     res = res.transpose()
 
-    print( res )
+    return res
 
-
-
-
-get_inverse( mat )
 
 
 

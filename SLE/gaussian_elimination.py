@@ -1,4 +1,4 @@
-from util import *
+from .util import *
 
 # mat = Matrix([
 #     [5., 3., 5.],
@@ -11,11 +11,11 @@ mat = Matrix([
     [144., 12., 1., 279.2]
 ])
 
-mat_val = Matrix([
-    [106.8],
-    [177.2],
-    [279.2]
-]) 
+# mat_val = Matrix([
+#     [106.8],
+#     [177.2],
+#     [279.2]
+# ]) 
 
 
 def upper_triangular(mat):
@@ -66,7 +66,7 @@ def elimination_pivoting( mat ):
         for i in range(row, rows-1):
             mat[i+1] = mat[i+1] - ( mat[row] * ( mat[i+1][row] / mat[row][row] ) )
 
-        print(mat)
+        # print(mat)
 
     
     rows = mat.row_count()
@@ -86,7 +86,6 @@ def elimination_pivoting( mat ):
 
 
 
-print( elimination_pivoting(mat) )
         
 
 

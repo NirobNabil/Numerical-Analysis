@@ -1,10 +1,13 @@
 
 import time
 import pandas
+import sympy  
 
 threshold = 0.5*(10**-2)
+x = sympy.Symbol('x')
+equation = ""
+eq = ""
 
-equation = "x**3 - 0.165*(x**2) + 3.993 * (10**-4)"
 
 def eq(x):
     return eval(equation)
@@ -17,7 +20,7 @@ def getxm( xl, xu ):
     return ( xu*eq(xl) - xl*eq(xu) ) / ( eq(xl) - eq(xu) )
 
 
-def raphson( xip, xipp ):
+def recurse( xip, xipp ):
 
     xi = xip - ( ( eq(xip) * (xip - xipp) ) / ( eq(xip) - eq(xipp) ) )
 
@@ -26,28 +29,32 @@ def raphson( xip, xipp ):
     return ( error, xi )
 
 
+def secant( eqn, xi, xip ):
 
-xi = 0.05
-xip = 0.02
-it = 1
+    global eq
+    eq = sympy.lambdify( x, eval(eqn) )
 
-table = []
+    # xi = 0.05
+    # xip = 0.02
+    it = 1
 
-error = 10000000
+    table = []
 
-# input( "Enter the equation:" )
+    error = 10000000
 
-while( error > threshold ):
-    ( error, xi_new ) = raphson( xi, xip )
+    # input( "Enter the equation:" )
 
-    table.append( [ it, xi_new, xi, xip,  error*100, eq(xi_new) ] )
-    it = it+1
-    time.sleep(0.1)
-    xip = xi
-    xi = xi_new
+    while( error > threshold ):
+        ( error, xi_new ) = recurse( xi, xip )
+
+        table.append( [ it, xi_new, xi, xip,  error*100, eq(xi_new) ] )
+        it = it+1
+        time.sleep(0.1)
+        xip = xi
+        xi = xi_new
 
 
-data = pandas.DataFrame(table, columns=['iteration', 'xi', 'xi-1', 'xi-2', 'e0%', 'f(xi)'], index=['']*len(table))
-data = data.round(4)
+    data = pandas.DataFrame(table, columns=['iteration', 'xi', 'xi-1', 'xi-2', 'e0%', 'f(xi)'], index=['']*len(table))
+    data = data.round(4)
 
-print( data )
+    return data
